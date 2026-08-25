@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Main-Class: dbms.MainDashboard
+Class-Path: lib/sqlite-jdbc-3.42.0.0.jar
+

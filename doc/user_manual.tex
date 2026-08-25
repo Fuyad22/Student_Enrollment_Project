@@ -1,0 +1,102 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    rulecolor=\color{gray!30},
+    breaklines=true
+}
+
+\title{\textbf{University Timetable \& Enrollment Portal \\ User Manual}}
+\author{\textbf{Md. Fuyad Hassan}}
+\date{August 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document serves as the official User Manual for the University Timetable \& Enrollment Portal. It covers system requirements, setup instructions, graphical user interface (GUI) details, step-by-step usage procedures, database configuration, and troubleshooting steps.
+\end{abstract}
+
+\section{Introduction}
+The \textbf{University Timetable \& Enrollment Portal} is a lightweight desktop-based system built using Java Swing and SQLite. It provides an efficient platform for academic departments to register students, define course units, and create weekly class schedules (timetables).
+
+\section{Prerequisites and Setup}
+
+\subsection{System Requirements}
+\begin{itemize}
+    \item \textbf{Operating System}: Windows 10 or 11
+    \item \textbf{Java Development Kit (JDK)}: JDK 22 or higher (to compile from source)
+    \item \textbf{Database}: SQLite JDBC driver (bundled within the project)
+\end{itemize}
+
+\subsection{Folder Hierarchy}
+Ensure the following directory structure is maintained:
+\begin{itemize}
+    \item \texttt{src/dbms/} -- Java source files.
+    \item \texttt{lib/} -- Dependency JARs containing \texttt{sqlite-jdbc-3.42.0.0.jar}.
+    \item \texttt{bin/} -- Destination for compiled class files.
+    \item \texttt{timetable.db} -- The database file storing tables for students, units, and schedules.
+    \item \texttt{build.bat} -- Compilation and app packaging script.
+\end{itemize}
+
+\subsection{Building the Project}
+To build the application, execute the provided batch script in the terminal:
+\begin{lstlisting}[language=bash]
+build.bat
+\end{lstlisting}
+This will clean previous builds, compile the Java files, bundle them into a JAR, and run \texttt{jpackage} to generate a standalone Windows application under \texttt{build-dist/}.
+
+\section{System Architecture}
+The system is constructed using standard Object-Oriented Design patterns:
+\begin{description}
+    \item[DatabaseManager] -- Connects to the SQLite database via JDBC and initializes the database tables (\texttt{students}, \texttt{units}, \texttt{timetable}) with foreign keys and cascade rules.
+    \item[Entity Models] -- Object representations of entities (\texttt{Student}, \texttt{Unit}, \texttt{Timetable}) mapped to database rows.
+    \item[GUI Controller] -- \texttt{MainDashboard.java} wraps Swing window components, sets the system Look \& Feel, and binds action listeners to handle CRUD operations.
+\end{description}
+
+\section{User Interface Guide}
+The interface is split into three main tabs:
+
+\subsection{Manage Students Tab}
+This tab manages student records.
+\begin{enumerate}
+    \item \textbf{Inputs}: Student ID (integer), Name, Email, Gender (Male, Female, Other), and Enrollment Date.
+    \item \textbf{Select Date}: Launches a custom date picker popup. Use the calendar to select a date and click \textbf{OK}.
+    \item \textbf{Add Student}: Saves the student profile to the database.
+    \item \textbf{Update Student}: Edits a student's email, name, gender, or date based on their ID.
+    \item \textbf{Delete Student}: Deletes a student profile and automatically clears any timetable entries mapped to them.
+\end{enumerate}
+
+\subsection{Manage Units Tab}
+This tab manages course units.
+\begin{enumerate}
+    \item \textbf{Inputs}: Unit Code (unique string), Unit Title, Credits (1--4), and Department.
+    \item \textbf{Add Unit}: Inserts a new unit into the database.
+    \item \textbf{Update Unit / Delete Unit}: Used to edit or delete courses. Deleting a unit automatically removes its schedules.
+\end{enumerate}
+
+\subsection{Manage Schedules Tab}
+This tab schedules classes by linking students to course units.
+\begin{enumerate}
+    \item \textbf{Inputs}: Select Student (dropdown), Select Unit (dropdown), Class Day (Monday--Sunday), and Class Time.
+    \item \textbf{Add Schedule}: Creates a new class allocation.
+    \item \textbf{Delete Schedule}: Removes a selected schedule slot.
+\end{enumerate}
+
+\section{Troubleshooting}
+\begin{description}
+    \item[Missing SQLite Driver] -- If you see a class loading error, verify that \texttt{sqlite-jdbc-3.42.0.0.jar} is present in the \texttt{lib/} directory.
+    \item[Foreign Key Failures] -- Ensure that when scheduling a class, both the student and unit are registered first.
+    \item[Database Locked] -- Close any SQLite database editors before running the application to avoid file lockups.
+\end{description}
+
+\end{document}
